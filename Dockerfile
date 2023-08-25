@@ -20,5 +20,5 @@ RUN x11vnc -storepasswd YOUR_PASSWORD_HERE ~/.vnc/passwd
 # 设置时区（示例为Asia/Shanghai）
 ENV TZ=Asia/Shanghai
 
-# 启动noVNC和Websockify
-CMD websockify --web=/usr/share/novnc/ --target-config=/root/.vnc/config --target-address=127.0.0.1 6080
+# 启动noVNC和Websockify，注意这里不需要使用 --target-address 选项
+CMD websockify 6080 127.0.0.1:5900
