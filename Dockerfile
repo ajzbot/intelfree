@@ -21,7 +21,12 @@ RUN dpkg --add-architecture i386 && \
     supervisor \
     x11vnc \
     xvfb \
-    fluxbox \
+    gnome-session \
+    gnome-panel \
+    gnome-settings-daemon \
+    metacity \
+    nautilus \
+    gnome-terminal \
     wmctrl \
     tzdata \
     wine64 \
@@ -39,4 +44,4 @@ RUN chmod +x -v /root/noVNC/utils/*.sh
 RUN mkdir ~/.vnc && x11vnc -storepasswd 1128 ~/.vnc/passwd
 
 # 启动VNC、noVNC和fluxbox
-CMD ["sh", "-c", "x11vnc -forever -usepw -create & /root/noVNC/utils/launch.sh --vnc localhost:5900"]
+CMD ["sh", "-c", "x11vnc -forever -usepw -create & /root/noVNC/utils/launch.sh --vnc localhost:5900 & gnome-session"]
