@@ -1,6 +1,8 @@
 # 使用官方的Ubuntu作为基础镜像
 FROM ubuntu:latest
 
+USER root
+
 # 设置非交互式环境
 ENV DEBIAN_FRONTEND=noninteractive
 
