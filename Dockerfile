@@ -1,6 +1,9 @@
 # 使用官方的Ubuntu作为基础镜像
 FROM ubuntu:latest
 
+# 设置非交互式环境
+ENV DEBIAN_FRONTEND=noninteractive
+
 # 安装必要的软件
 RUN apt update && \
     apt install -y xfce4 xfce4-goodies xfonts-base xfonts-100dpi novnc websockify x11vnc && \
@@ -12,7 +15,10 @@ RUN mkdir -p ~/.vnc && \
     chmod +x ~/.vnc/xstartup
 
 # 设置VNC密码
-RUN x11vnc -storepasswd 1128 ~/.vnc/passwd
+RUN x11vnc -storepasswd YOUR_PASSWORD_HERE ~/.vnc/passwd
+
+# 设置时区（示例为Asia/Shanghai）
+ENV TZ=Asia/Shanghai
 
 # 启动noVNC和Websockify
 CMD websockify --web=/usr/share/novnc/ --target-config=/root/.vnc/config --target-address=127.0.0.1 6080
