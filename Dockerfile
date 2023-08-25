@@ -1,26 +1,19 @@
-# 使用官方的Ubuntu作为基础镜像
-FROM ubuntu:latest
-
-USER root
-
-# 设置非交互式环境
-ENV DEBIAN_FRONTEND=noninteractive
-
-# 安装必要的软件
-RUN apt update && \
-    apt install -y --no-install-recommends xfce4 xfce4-goodies xfonts-base xfonts-100dpi novnc x11vnc && \
-    apt clean
-
-# 配置noVNC和Xvnc
-RUN mkdir -p ~/.vnc && \
-    echo 'startxfce4 &' > ~/.vnc/xstartup && \
-    chmod +x ~/.vnc/xstartup
-
-# 设置VNC密码
-RUN x11vnc -storepasswd 1128 ~/.vnc/passwd
-
-# 设置时区（示例为Asia/Shanghai）
-ENV TZ=Asia/Shanghai
-
-# 启动noVNC（注意：不需要websockify）
-CMD vncserver :0 -localhost no && /usr/share/novnc/utils/launch.sh --vnc localhost:5900
+FROM ubuntu
+RUN dpkg --add-architecture i386
+RUN apt update
+RUN DEBIAN_FRONTEND=noninteractive apt install wine qemu-kvm *zenhei* xz-utils dbus-x11 curl firefox-esr gnome-system-monitor mate-system-monitor  git xfce4 xfce4-terminal tightvncserver wget   -y
+RUN wget https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz
+RUN tar -xvf v1.2.0.tar.gz
+RUN mkdir  $HOME/.vnc
+RUN echo '1128' | vncpasswd -f > $HOME/.vnc/passwd
+RUN echo '/bin/env  MOZ_FAKE_NO_SANDBOX=1  dbus-launch xfce4-session'  > $HOME/.vnc/xstartup
+RUN chmod 600 $HOME/.vnc/passwd
+RUN chmod 755 $HOME/.vnc/xstartup
+RUN echo 'whoami ' >>/luo.sh
+RUN echo 'cd ' >>/luo.sh
+RUN echo "su -l -c 'vncserver :2000 -geometry 1366x768' "  >>/luo.sh
+RUN echo 'cd /noVNC-1.2.0' >>/luo.sh
+RUN echo './utils/launch.sh  --vnc localhost:7900 --listen 8900 ' >>/luo.sh
+RUN chmod 755 /luo.sh
+EXPOSE 8900
+CMD  /luo.sh 
