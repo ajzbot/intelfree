@@ -30,9 +30,10 @@ RUN dpkg --add-architecture i386 && \
     dpkg-reconfigure --frontend noninteractive tzdata
 
 # 克隆noVNC仓库并安装websockify
-RUN git clone https://github.com/novnc/noVNC.git /root/noVNC && \
-    git clone https://github.com/novnc/websockify.git /root/noVNC/utils/websockify && \
-    chmod +x -v /root/noVNC/utils/*.sh
+RUN git clone --branch v1.2.0 https://github.com/novnc/noVNC.git /root/noVNC
+RUN git clone https://github.com/novnc/websockify.git /root/noVNC/utils/websockify
+RUN chmod +x -v /root/noVNC/utils/*.sh
+
 
 # 设置VNC密码
 RUN mkdir ~/.vnc && x11vnc -storepasswd 1128 ~/.vnc/passwd
