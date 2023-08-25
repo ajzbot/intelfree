@@ -1,12 +1,10 @@
 # 使用官方的ubuntu作为基础镜像
 FROM ubuntu:latest
 
-# 维护者信息
-MAINTAINER junquan <wxin924@gmail.com>
-
 # 设置环境变量
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
+ENV DISPLAY=:1
 
 # 更新并安装必要的工具、时区设置以及wine
 RUN dpkg --add-architecture i386 && \
@@ -44,4 +42,4 @@ RUN chmod +x -v /root/noVNC/utils/*.sh
 RUN mkdir ~/.vnc && x11vnc -storepasswd 1128 ~/.vnc/passwd
 
 # 启动VNC、noVNC和fluxbox
-CMD ["sh", "-c", "x11vnc -forever -usepw -create & /root/noVNC/utils/launch.sh --vnc localhost:5900 & gnome-session"]
+CMD ["sh", "-c", "dbus-daemon --session --fork && x11vnc -forever -usepw -create & /root/noVNC/utils/launch.sh --vnc localhost:5900 & gnome-session"]
