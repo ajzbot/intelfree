@@ -20,18 +20,18 @@ RUN apk add --no-cache xorg-server xterm
 ENV DISPLAY=:0
 
 # 创建supervisord.conf配置文件
-RUN cat <<EOT >> /etc/supervisord.conf
-[supervisord]
-nodaemon=true
-
-[program:xvfb]
-command=Xvfb :0 -screen 0 1024x768x24
-
-[program:x11vnc]
-command=x11vnc -display :0 -forever -passwd 1128 -shared
-
-[program:websockify]
-command=/usr/share/novnc/utils/launch.sh --vnc localhost:5900
+RUN cat <<EOT >> /etc/supervisord.conf \
+[supervisord] \
+nodaemon=true \
+ \
+[program:xvfb] \
+command=Xvfb :0 -screen 0 1024x768x24 \
+ \
+[program:x11vnc] \
+command=x11vnc -display :0 -forever -passwd 1128 -shared \
+ \
+[program:websockify] \
+command=/usr/share/novnc/utils/launch.sh --vnc localhost:5900 \
 EOT
 
 # 启动supervisor以同时运行x11vnc和websockify
