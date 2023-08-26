@@ -1,18 +1,23 @@
-# 使用Alpine Linux作为基础镜像
+# Use Alpine Linux as the base image
 FROM alpine:latest
 
-# 执行更新和安装所需软件包
+# Update and install required packages
 RUN apk update && \
-    apk add --no-cache x11vnc xvfb xterm novnc
+    apk add --no-cache x11vnc xvfb xterm wget
 
-# 设置X11环境变量
+# Set X11 environment variable
 ENV DISPLAY=:0
 
-# 启动Xvfb
+# Install Xvfb
 CMD ["Xvfb", ":0", "-screen", "0", "1024x768x24"]
 
-# Expose noVNC port
+# Expose VNC and noVNC ports
+EXPOSE 5900
 EXPOSE 6080
 
-# 启动x11vnc和noVNC
+# Download and set up noVNC
+RUN mkdir -p /usr/share/novnc && \
+    wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz | tar xz --strip 1 -C /usr/share/novnc
+
+# Start x11vnc and noVNC
 CMD ["sh", "-c", "x11vnc -display :0 -forever -passwd 1128 -shared & /usr/share/novnc/utils/launch.sh --vnc localhost:5900"]
