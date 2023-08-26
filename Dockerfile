@@ -3,7 +3,7 @@ FROM ubuntu:latest
 MAINTAINER YourName <youremail@example.com>
 
 # Prepare the main environment and install git
-RUN apt-get update && apt-get install -y debootstrap x11vnc xvfb git
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y debootstrap x11vnc xvfb git
 
 # Create a new directory for the chroot environment
 RUN mkdir /chroot
