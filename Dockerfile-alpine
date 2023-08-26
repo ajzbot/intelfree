@@ -1,6 +1,9 @@
 # 使用Alpine Linux作为基础镜像
 FROM alpine:latest
 
+# 设置标签
+LABEL maintainer="your-email@example.com"
+
 # 执行更新和安装所需软件包
 RUN apk update && \
     apk add --no-cache x11vnc xvfb supervisor wget xauth && \
@@ -11,7 +14,7 @@ RUN apk update && \
     chmod +x /usr/share/novnc/utils/*.sh
 
 # 安装X11的必要组件
-RUN apk add --no-cache xorg-server xorg-xauth xterm
+RUN apk add --no-cache xorg-server xterm
 
 # 设置X11环境变量
 ENV DISPLAY=:0
