@@ -3,7 +3,7 @@ FROM alpine:latest
 
 # Update and install required packages
 RUN apk update && \
-    apk add --no-cache x11vnc xvfb xterm wget
+    apk add --no-cache x11vnc xvfb xterm wget unzip
 
 # Set X11 environment variable
 ENV DISPLAY=:0
@@ -17,7 +17,11 @@ EXPOSE 6080
 
 # Download and set up noVNC
 RUN mkdir -p /usr/share/novnc && \
-    wget -qO- https://github.com/novnc/noVNC/archive/master.zip | tar xz --strip 1 -C /usr/share/novnc
+    wget -qO /tmp/novnc.zip https://github.com/novnc/noVNC/archive/master.zip && \
+    unzip -q /tmp/novnc.zip -d /usr/share/novnc && \
+    mv /usr/share/novnc/noVNC-master/* /usr/share/novnc && \
+    rm -rf /usr/share/novnc/noVNC-master && \
+    rm /tmp/novnc.zip
 
 # Start x11vnc and noVNC
 CMD ["sh", "-c", "x11vnc -display :0 -forever -passwd 1128 -shared & /usr/share/novnc/utils/novnc_proxy --vnc localhost:5900"]
