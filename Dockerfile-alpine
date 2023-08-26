@@ -2,11 +2,13 @@
 FROM alpine:latest
 
 # 执行更新和安装所需软件包
-RUN apk update && \
-    apk add --no-cache x11vnc xvfb supervisor wget && \
-    wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz | tar xz --strip 1 -C /usr/share/novnc && \
-    wget -qO- https://github.com/novnc/websockify/archive/master.tar.gz | tar xz --strip 1 -C /usr/share/novnc/utils/websockify && \
-    chmod +x /usr/share/novnc/utils/*.sh
+RUN apk update
+RUN apk add --no-cache x11vnc xvfb supervisor wget
+RUN wget -qO- https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz | tar xz --strip 1 -C /usr/share/novnc && \
+RUN tar -zxvf v1.2.0.tar.gz /usr/share/novnc
+RUN wget -qO- https://github.com/novnc/websockify/archive/master.tar.gz
+RUN tar -zxvf master.tar.gz /usr/share/novnc/utils/websockify
+RUN chmod +x /usr/share/novnc/utils/*.sh
 
 # 安装X11的必要组件
 RUN apk add --no-cache xorg-server xorg-xauth xterm
