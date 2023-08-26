@@ -9,7 +9,7 @@ RUN apk update && \
     apk add --no-cache x11vnc xvfb supervisor wget
 
 # 安装X11的必要组件
-RUN apk add --no-cache xorg-server xorg-xauth xterm
+RUN apk add --no-cache xorg-server xauth xterm
 
 # 设置X11环境变量
 ENV DISPLAY=:0
