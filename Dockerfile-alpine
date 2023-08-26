@@ -19,13 +19,6 @@ RUN apk add --no-cache xorg-server xterm
 # 设置X11环境变量
 ENV DISPLAY=:0
 
-# 创建普通用户
-RUN adduser -D user
-USER user
-
-# 设置工作目录
-WORKDIR /home/user
-
 # 创建supervisord.conf配置文件
 RUN cat <<EOT >> /etc/supervisord.conf
 [supervisord]
