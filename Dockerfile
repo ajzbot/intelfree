@@ -1,42 +1,29 @@
-# 使用官方的ubuntu作为基础镜像
 FROM ubuntu:latest
 
-# 设置环境变量
-ENV DEBIAN_FRONTEND=noninteractive
-ENV TZ=Asia/Shanghai
-ENV DISPLAY=:1
+MAINTAINER YourName <youremail@example.com>
 
-# 更新并安装必要的工具、时区设置以及wine
-RUN dpkg --add-architecture i386 && \
-    apt-get update && apt-get install -y \
-    net-tools \
-    git \
-    wget \
-    unzip \
-    python3 \
-    python3-numpy \
-    python3-pip \
-    supervisor \
-    x11vnc \
-    xvfb \
-    xfce4 \
-    xfce4-terminal \
-    dbus-x11 \
-    wmctrl \
-    tzdata \
-    wine64 \
-    wine32 && \
-    ln -fs /usr/share/zoneinfo/$TZ /etc/localtime && \
-    dpkg-reconfigure --frontend noninteractive tzdata
+# Prepare the main environment and install git
+RUN apt-get update && apt-get install -y debootstrap x11vnc xvfb git
 
-# 克隆noVNC仓库并安装websockify
-RUN git clone --branch v1.2.0 https://github.com/novnc/noVNC.git /root/noVNC
-RUN git clone https://github.com/novnc/websockify.git /root/noVNC/utils/websockify
-RUN chmod +x -v /root/noVNC/utils/*.sh
+# Create a new directory for the chroot environment
+RUN mkdir /chroot
 
+# Use debootstrap to install a basic Ubuntu system in the /chroot directory
+RUN debootstrap jammy /chroot http://archive.ubuntu.com/ubuntu/
 
-# 设置VNC密码
-RUN mkdir ~/.vnc && x11vnc -storepasswd 1128 ~/.vnc/passwd
+# Chroot into the new environment, set it up, and install git
+RUN echo "deb http://archive.ubuntu.com/ubuntu/ jammy main restricted universe multiverse" > /chroot/etc/apt/sources.list && \
+    chroot /chroot /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get update" && \
+    chroot /chroot /bin/bash -c "DEBIAN_FRONTEND=noninteractive apt-get install -y xfce4 xfce4-terminal dbus-x11 wget python3 python3-pip git" && \
+    chroot /chroot apt-get clean
 
-# 启动VNC、noVNC和fluxbox
-CMD ["sh", "-c", "Xvfb :1 -screen 0 1280x720x24 & x11vnc -forever -usepw -display :1 & /root/noVNC/utils/launch.sh --vnc localhost:5900 & startxfce4"]
+# Clone noVNC into the chroot environment
+RUN chroot /chroot git clone --branch v1.2.0 https://github.com/novnc/noVNC.git /root/noVNC && \
+    chroot /chroot git clone https://github.com/novnc/websockify.git /root/noVNC/utils/websockify
+
+# Setup a password for x11vnc
+RUN x11vnc -storepasswd 1128 /chroot/root/.vncpasswd
+
+# Start command
+CMD ["sh", "-c", "chroot /chroot /bin/bash -c 'Xvfb :1 -screen 0 1280x720x24 & x11vnc -forever -usepw -display :1 & /root/noVNC/utils/launch.sh --vnc localhost:5900 & startxfce4'"]
+
