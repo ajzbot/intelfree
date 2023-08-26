@@ -2,6 +2,9 @@ FROM ubuntu:latest
 
 LABEL maintainer="YourName <youremail@example.com>"
 
+# Prepare the main environment and install debootstrap
+RUN apt-get update && apt-get install -y debootstrap
+
 # Create a new directory for the chroot environment in the user's home directory
 RUN mkdir -p $HOME/chroot
 
