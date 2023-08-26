@@ -4,7 +4,6 @@ FROM ubuntu:latest
 # 设置环境变量
 ENV DEBIAN_FRONTEND=noninteractive
 ENV TZ=Asia/Shanghai
-ENV XDG_CURRENT_DESKTOP=GNOME
 ENV DISPLAY=:1
 
 # 更新并安装必要的工具、时区设置以及wine
@@ -20,12 +19,8 @@ RUN dpkg --add-architecture i386 && \
     supervisor \
     x11vnc \
     xvfb \
-    gnome-session \
-    gnome-panel \
-    gnome-settings-daemon \
-    metacity \
-    nautilus \
-    gnome-terminal \
+    xfce4 \
+    xfce4-terminal \
     dbus-x11 \
     wmctrl \
     tzdata \
@@ -44,4 +39,4 @@ RUN chmod +x -v /root/noVNC/utils/*.sh
 RUN mkdir ~/.vnc && x11vnc -storepasswd 1128 ~/.vnc/passwd
 
 # 启动VNC、noVNC和fluxbox
-CMD ["sh", "-c", "dbus-launch --exit-with-session gnome-session & x11vnc -forever -usepw -create & /root/noVNC/utils/launch.sh --vnc localhost:5900"]
+CMD ["sh", "-c", "Xvfb :1 -screen 0 1280x720x24 & x11vnc -forever -usepw -display :1 & /root/noVNC/utils/launch.sh --vnc localhost:5900 & startxfce4"]
