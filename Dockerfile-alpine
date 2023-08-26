@@ -5,9 +5,9 @@ FROM alpine:latest
 RUN apk update
 RUN apk add --no-cache x11vnc xvfb supervisor wget
 RUN wget https://github.com/novnc/noVNC/archive/refs/tags/v1.2.0.tar.gz
-RUN tar -zxvf v1.2.0.tar.gz /usr/share/novnc
+RUN tar -zxvf v1.2.0.tar.gz -C /usr/share/novnc
 RUN wget https://github.com/novnc/websockify/archive/master.tar.gz
-RUN tar -zxvf master.tar.gz /usr/share/novnc/utils/websockify
+RUN tar -zxvf master.tar.gz -C /usr/share/novnc/utils/websockify
 RUN chmod +x /usr/share/novnc/utils/*.sh
 
 # 安装X11的必要组件
