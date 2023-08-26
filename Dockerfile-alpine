@@ -15,11 +15,11 @@ RUN apk add --no-cache xorg-server xauth xterm
 ENV DISPLAY=:0
 
 # 创建普通用户
-RUN adduser -D user
-USER user
+#RUN adduser -D user
+#USER user
 
 # 设置工作目录
-WORKDIR /home/user
+#WORKDIR /home/user
 
 # 下载并复制noVNC文件到容器
 RUN mkdir -p /usr/share/novnc && \
